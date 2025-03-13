@@ -8,8 +8,19 @@ import { NeverminedService } from "./nevermined.service.js";
 import path from "path";
 import fs from "fs/promises";
 import { AgentExecutionStatus } from "@nevermined-io/payments";
+import mineflayerViewer from "prismarine-viewer";
 
 const { Movements, goals } = pathfinder;
+const { mineflayer: viewer } = mineflayerViewer;
+
+declare module "mineflayer" {
+  interface Bot {
+    viewer?: {
+      drawLine(label: string, points: Vec3[]): void;
+      close(): void;
+    };
+  }
+}
 
 export class MineflayerService implements IService {
   private static instance: MineflayerService;
@@ -645,8 +656,35 @@ export class MineflayerService implements IService {
     }
   }
 
+  private setupViewer() {
+    if (!this.bot) return;
+
+    const currentBot = this.bot;
+
+    // Start the viewer
+    viewer(currentBot, { port: 3000, firstPerson: true });
+    console.log("[Mineflayer] Viewer started on http://localhost:3000");
+
+    // Set up the path tracking
+    const path: Vec3[] = [currentBot.entity.position.clone()];
+
+    this.bot.on("move", () => {
+      if (!this.bot || !this.bot.viewer) return;
+
+      if (path[path.length - 1].distanceTo(this.bot.entity.position) > 1) {
+        path.push(this.bot.entity.position.clone());
+        this.bot.viewer.drawLine("path", path);
+      }
+    });
+  }
+
   private setupEventHandlers() {
     if (!this.bot) return;
+
+    this.bot.once("spawn", () => {
+      console.log("[Mineflayer] Bot spawned");
+      this.setupViewer(); // Initialize the viewer when the bot spawns
+    });
 
     this.bot.on("playerCollect", (collector, collected) => {
       if (collector.username === this.bot?.username) {

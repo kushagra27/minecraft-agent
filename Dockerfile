@@ -9,21 +9,28 @@ RUN npm install -g pnpm
 # See: https://github.com/elizaOS/eliza/issues/1543#issuecomment-2570781857
 RUN npm install -g sqlite-vec
 
-# Install system dependencies including SQLite
+# Install system dependencies including canvas dependencies
 RUN apt-get update && \
-  apt-get install -y python3 make g++ jq sqlite3 libsqlite3-dev
+  apt-get install -y python3 make g++ jq sqlite3 libsqlite3-dev \
+  # Canvas dependencies
+  build-essential libcairo2-dev libpango1.0-dev libjpeg-dev \
+  libgif-dev librsvg2-dev pkg-config \
+  # GL dependencies
+  libxi-dev libglu1-mesa-dev libglew-dev \
+  # Create python symlink for packages that use python instead of python3
+  && ln -s /usr/bin/python3 /usr/bin/python
+
+# Set environment variables for native module builds
+ENV npm_config_better_sqlite3_binary_host_mirror=https://github.com/WiseLibs/better-sqlite3/releases/download
+ENV npm_config_better_sqlite3_binary_host_tag=v8.7.0
+ENV npm_config_build_from_source=true
+ENV NODE_OPTIONS=--max_old_space_size=4096
 
 # Copy source code (excluding files in .dockerignore)
 COPY . .
 
-# Set environment variables for better-sqlite3
-ENV npm_config_better_sqlite3_binary_host_mirror=https://github.com/WiseLibs/better-sqlite3/releases/download
-ENV npm_config_better_sqlite3_binary_host_tag=v8.7.0
-
-# Install dependencies with proper native module building
-RUN NODE_OPTIONS=--max_old_space_size=4096 \
-  npm_config_build_from_source=true \
-  pnpm install
+# Install dependencies for server only, skipping client-side packages
+RUN cd server && pnpm install --no-frozen-lockfile --shamefully-hoist
 
 # Build the server
 RUN cd server && pnpm run build
@@ -37,4 +44,4 @@ RUN printf '#!/bin/sh\n\
 RUN chmod +x /app/start.sh
 
 # Run the server
-CMD ["/app/start.sh"] 
+CMD ["/app/start.sh"]

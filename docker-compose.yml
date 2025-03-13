@@ -15,9 +15,9 @@ services:
       - MINECRAFT_HOST=host.docker.internal
       - MINECRAFT_ROLE=builder
       - NEVERMINED_API_KEY=${BOB_NEVERMINED_API_KEY}
-
     ports:
       - "3001:3001"
+      - "3101:3000"  # New port mapping for the Prismarine viewer
     volumes:
       - shared_data:/app/server/data
     networks:
@@ -44,6 +44,7 @@ services:
       - NEVERMINED_API_KEY=${ALICE_NEVERMINED_API_KEY}
     ports:
       - "3002:3002"
+      - "3100:3000"  # New port mapping for the Prismarine viewer
     volumes:
       - shared_data:/app/server/data
     networks:
@@ -57,4 +58,4 @@ volumes:
 
 networks:
   minecraft-network:
-    driver: bridge 
+    driver: bridge
