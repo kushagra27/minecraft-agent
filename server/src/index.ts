@@ -15,6 +15,7 @@ import githubRouter from "./routes/github.js";
 import { AnyType } from "./utils.js";
 import { isHttpError } from "http-errors";
 import { MineflayerService } from "./services/mineflayer.service.js";
+import { MinecraftAgentService } from "./services/eliza-mineflayer.service.js";
 import minecraftRouter from "./routes/minecraft.js";
 import { NeverminedService } from "./services/nevermined.service.js";
 
@@ -116,6 +117,10 @@ app.listen(port, async () => {
     const mineflayerService = MineflayerService.getInstance();
     await mineflayerService.start();
     services.push(mineflayerService);
+
+    const minecraftAgentService = MinecraftAgentService.getInstance();
+    await minecraftAgentService.start();
+    services.push(minecraftAgentService);
 
     // Initialize Nevermined service
     const neverminedService = NeverminedService.getInstance();

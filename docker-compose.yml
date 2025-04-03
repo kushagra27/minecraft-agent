@@ -19,20 +19,26 @@ services:
       - MINECRAFT_VERSION=1.20
       - MINECRAFT_PORT=25565
 
+      # Eliza AI configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_PROVIDER=OPENAI
+      - ELIZA_CHARACTER_PATH=minecraft-character.json
+
       - NEVERMINED_API_KEY=${BOB_NEVERMINED_API_KEY}
       - COLLABLAND_API_KEY=${COLLABLAND_API_KEY}
       - TELEGRAM_BOT_TOKEN=${BOB_TELEGRAM_BOT_TOKEN}
       - PRIVATE_KEY=${BOB_PRIVATE_KEY}
       - BASE_SEPOLIA_RPC_URL=${BASE_SEPOLIA_RPC_URL}
     ports:
-      - '3001:3001'
+      - "3001:3001"
     volumes:
       - shared_data:/app/server/data
+      - ./minecraft-character.json:/app/minecraft-character.json
     networks:
       - minecraft-network
     # For Linux, add this to make host.docker.internal work
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
+      - "host.docker.internal:host-gateway"
 
   minecraft-bot-alice:
     build:
@@ -53,20 +59,27 @@ services:
       - MINECRAFT_ROLE=merchant
       - MINECRAFT_VERSION=1.20
       - MINECRAFT_PORT=25565
+
+      # Eliza AI configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_PROVIDER=OPENAI
+      - ELIZA_CHARACTER_PATH=minecraft-character.json
+
       - NEVERMINED_API_KEY=${ALICE_NEVERMINED_API_KEY}
       - PRIVATE_KEY=${ALICE_PRIVATE_KEY}
       - COLLABLAND_API_KEY=${COLLABLAND_API_KEY}
       - TELEGRAM_BOT_TOKEN=${ALICE_TELEGRAM_BOT_TOKEN}
       - BASE_SEPOLIA_RPC_URL=${BASE_SEPOLIA_RPC_URL}
     ports:
-      - '3002:3002'
+      - "3002:3002"
     volumes:
       - shared_data:/app/server/data
+      - ./minecraft-character.json:/app/minecraft-character.json
     networks:
       - minecraft-network
     # For Linux, add this to make host.docker.internal work
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
+      - "host.docker.internal:host-gateway"
 
   minecraft-bot-alli:
     build:
@@ -87,20 +100,27 @@ services:
       - MINECRAFT_ROLE=merchant
       - MINECRAFT_VERSION=1.20
       - MINECRAFT_PORT=25565
+
+      # Eliza AI configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_PROVIDER=OPENAI
+      - ELIZA_CHARACTER_PATH=minecraft-character.json
+
       - NEVERMINED_API_KEY=${ALLI_NEVERMINED_API_KEY}
       - PRIVATE_KEY=${ALLI_PRIVATE_KEY}
       - COLLABLAND_API_KEY=${COLLABLAND_API_KEY}
       - TELEGRAM_BOT_TOKEN=${ALLI_TELEGRAM_BOT_TOKEN}
       - BASE_SEPOLIA_RPC_URL=${BASE_SEPOLIA_RPC_URL}
     ports:
-      - '3002:3002'
+      - "3002:3002"
     volumes:
       - shared_data:/app/server/data
+      - ./minecraft-character.json:/app/minecraft-character.json
     networks:
       - minecraft-network
     # For Linux, add this to make host.docker.internal work
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
+      - "host.docker.internal:host-gateway"
 
   minecraft-bot-bill:
     build:
@@ -122,21 +142,26 @@ services:
       - MINECRAFT_VERSION=1.20
       - MINECRAFT_PORT=25565
 
+      # Eliza AI configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_PROVIDER=OPENAI
+      - ELIZA_CHARACTER_PATH=minecraft-character.json
+
       - NEVERMINED_API_KEY=${BILL_NEVERMINED_API_KEY}
       - COLLABLAND_API_KEY=${COLLABLAND_API_KEY}
       - TELEGRAM_BOT_TOKEN=${BILL_TELEGRAM_BOT_TOKEN}
       - PRIVATE_KEY=${BILL_PRIVATE_KEY}
       - BASE_SEPOLIA_RPC_URL=${BASE_SEPOLIA_RPC_URL}
     ports:
-      - '3001:3001'
+      - "3001:3001"
     volumes:
       - shared_data:/app/server/data
+      - ./minecraft-character.json:/app/minecraft-character.json
     networks:
       - minecraft-network
     # For Linux, add this to make host.docker.internal work
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
-
+      - "host.docker.internal:host-gateway"
 
 volumes:
   shared_data:
